@@ -10,11 +10,30 @@ public class REcompile {
     String p = "ab*a+cd"; //globally accessible variable
 
 
+    //Global state variable, for setting up a new state
+    int state= 0;
     String alternation="+";
     String closure="()";
     String concatenation = "*";
-    char []ch = setArray(p);
 
+    //Character array
+    char [] character = new char[p.length()];
+    //next state arrays
+    int [] n1 = new int[p.length()];
+    int [] n2 = new int [p.length()];
+
+    //Increment counter for regexp FSM
+    int j =0;
+
+
+    //Set up a state for regexp
+    public void setState(int globalstate,char ch, int nextState, int nextState2){
+        character[globalstate]=ch;
+        n1[globalstate]=nextState;
+        n2[globalstate]=nextState2;
+    }
+
+    //Created for testing
     public char[] setArray(String st){
         char[] ch= new char[st.length()];
         for (int i =0; i<st.length();i++){
@@ -23,79 +42,102 @@ public class REcompile {
         return ch;
     }
 
-    int j =0;
+
 
     //find an expression (term, E)
+/*    public int expression(){
 
-    public boolean expression(){
-
-    term();//find the term first
+    int result =term();//find the term first
 
     //check if this is an end of string, null byte
-    if(ch[j]==0){
+    if(character[j]==0){
         //Only term in the expression
-        return true;
+        return
 
     }else{
         //Look ahead to see if there are more terms which starting with ( or literal
-        if(ch[j]!='('||isVocab(ch[j])){
-            return false;
+        if(character[j]!='('||isVocab(character[j])){
+            return
         }else {
             expression();
         }
     }
-}
+    return
+}*/
 
 //T -> F or F* or F+T
-public boolean term(){
+public int term(){
 
     //First execution term will take will be factor, if not F? false or exception etc
-    if (factor()){
-        if(ch[j]=='*'){
-            j++;
-            return true;
-        }
-        if(ch[j]=='+'){
-            j++;
-            if(term()){
+    int t1= factor();
+    int result= factor();
+    int f1= state-1;//last one just built from factor()
 
-                return true;
-            }else {return false;}
+        if(character[j]=='*'){
+            setState(state,'`',t1,state+1);//branching that 0 or more of t1
+            j++;
+            result= state;//return this state
+            state++;//increment for the next state
 
         }
-    }
-    return false;
+        if(character[j]=='+'){
+            int t2=term();
+            setState(state,'`',t1,t2);
+            result=state;
+            j++;
+
+            //Check if preceding term is non-branching state by comparing two next states
+            if(n1[f1]==n2[f1]){
+                //Updating the preceding term's states
+                setState(f1,character[f1],state,state);
+                state++;
+            }else {
+                //Branching so only one state to merge
+                setState(f1,character[f1],n1[f1],state);
+                state++;
+            }
+
+            return result;
+        }
+        //Factor itself
+        return result;
+
 }
 
 
 //F -> literal or expression
-    private boolean factor() {
+    private int factor() {
 
-
+        int result;
     //Check if looking at literals
-    if (isVocab(ch[j])){
+    if (isVocab(character[j])){
+        setState(state,character[j],n1[j],n2[j]);
         j++;
-        return true;
+        result=state;
+        state++;
+        return result;
     }else {
 
         //Check if it is an expression
-        if(ch[j]=='('){
+        if(character[j]=='('){
             j++;
-            //expression();@@@@@@@@@@
-        }else {return false;}
-        if (ch[j]==')'){
-            j++;
-            //return true, success
-
-            return true;
+            //result=expression();
+            if (character[j]==')'){
+                j++;
+            }else {
+                System.err.println("Must have a ')' in the end");
+            }
+        }else {
+            System.err.println("not a factor");
         }
-    }return false;
+
+    }return state;//No factor so return start state
     }
 
 
     //Check the character is allowed symbol
     public boolean isVocab(char ch){
-    if( ch == '+' || ch == '*' )return false;
+    if( ch == '+' || ch == '*' ||ch=='?'||ch=='|' )return false;
     return true;
 
 }
