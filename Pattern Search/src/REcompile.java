@@ -10,87 +10,108 @@ public class REcompile {
     String p = "ab*a+cd"; //globally accessible variable
 
 
+    String alternation="+";
+    String closure="()";
+    String concatenation = "*";
+    char []ch = setArray(p);
+
+    public char[] setArray(String st){
+        char[] ch= new char[st.length()];
+        for (int i =0; i<st.length();i++){
+            ch[i]=st.charAt(i);
+        }
+        return ch;
+    }
 
     int j =0;
 
     //find an expression (term, E)
-public void expression(){
+
+    public boolean expression(){
 
     term();//find the term first
 
-    //check if this is an end of string
-    if(p[j]==null){
-        //return great
+    //check if this is an end of string, null byte
+    if(ch[j]==0){
+        //Only term in the expression
+        return true;
+
+    }else{
+        //Look ahead to see if there are more terms which starting with ( or literal
+        if(ch[j]!='('||isVocab(ch[j])){
+            return false;
+        }else {
+            expression();
+        }
     }
-
-    //Check if the expression is looking at ( or literal after term ----look ahead
-    if(p[j]!="("&&isVocab(p[j])){
-
-        //return bad news
-
-    }
-    expression();
-
 }
 
 //T -> F or F* or F+T
-public void term(){
+public boolean term(){
 
     //First execution term will take will be factor, if not F? false or exception etc
     if (factor()){
-        if(p[j]=="*"){
+        if(ch[j]=='*'){
             j++;
-            //return true/success
+            return true;
         }
-        if(p[j]=="+"){
+        if(ch[j]=='+'){
             j++;
             if(term()){
 
-            }
-                //true return
+                return true;
+            }else {return false;}
+
         }
     }
+    return false;
 }
 
 
 //F -> literal or expression
-    private void factor() {
+    private boolean factor() {
+
 
     //Check if looking at literals
-    if (isVocab(p[j])){
+    if (isVocab(ch[j])){
         j++;
+        return true;
     }else {
 
         //Check if it is an expression
-        if(p[j]=="("){
+        if(ch[j]=='('){
             j++;
-            expression();
-        }
-        if (p[j]==")"){
+            //expression();@@@@@@@@@@
+        }else {return false;}
+        if (ch[j]==')'){
             j++;
             //return true, success
 
+            return true;
         }
-    }
+    }return false;
     }
 
+
     //Check the character is allowed symbol
-public boolean isVocab(char c){
-    return false;//if open bracket
+    public boolean isVocab(char ch){
+    if( ch == '+' || ch == '*' )return false;
+    return true;
+
 }
 
 
 
 
-    public static void main(String[] args) {
-
-
-        String st = "ab*a+cd";
-        String [] p=new String[9];
-        for (int i=0; i < p.length; i++)
-
-            System.out.println("Char " + i + " is " + st.charAt(i));
-    }
+//    public static void main(String[] args) {
+//
+//
+//        String st = "ab*a+cd";
+//        String [] p=new String[9];
+//        for (int i=0; i < p.length; i++)
+//
+//            System.out.println("Char " + i + " is " + st.charAt(i));
+//    }
 
 
 }
