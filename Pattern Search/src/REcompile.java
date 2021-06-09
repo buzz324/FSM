@@ -7,8 +7,9 @@ public class REcompile {
     // the symbol to be matched or branch-state indicator (or other type of indicator if you find an alternative useful),
     // and two numbers indicating the two possible next states.
 
-    String p = "ab*a+cd"; //globally accessible variable
-
+    //String p = "ab*a+cd"; //globally accessible variable
+    String p = "aabbaab"; //globally accessible variable
+    //String p = "\\a"; //globally accessible variable
 
     //Global state variable, for setting up a new state
     int state= 0;
@@ -25,7 +26,6 @@ public class REcompile {
     //Increment counter for regexp FSM
     int j =0;
 
-
     //Set up a state for regexp
     public void setState(int globalstate,char ch, int nextState, int nextState2){
         character[globalstate]=ch;
@@ -34,46 +34,82 @@ public class REcompile {
     }
 
     //Created for testing
-    public char[] setArray(String st){
-        char[] ch= new char[st.length()];
-        for (int i =0; i<st.length();i++){
-            ch[i]=st.charAt(i);
-        }
-        return ch;
+    public int stringLength(){
+        return p.length();
     }
 
-
-
-    //find an expression (term, E)
-/*    public int expression(){
-
-    int result =term();//find the term first
-
-    //check if this is an end of string, null byte
-    if(character[j]==0){
-        //Only term in the expression
-        return
-
-    }else{
-        //Look ahead to see if there are more terms which starting with ( or literal
-        if(character[j]!='('||isVocab(character[j])){
-            return
-        }else {
-            expression();
-        }
+    //Check the character is allowed symbol
+    public boolean isVocab(char ch){
+        if( ch == '+' || ch == '*' ||ch=='?'||ch=='|' )return false;
+        return true;
     }
-    return
-}*/
+
+    //F -> literal or expression
+    private int factor() {
+
+        int result;
+
+        //Set a state only if we have a space in the array
+        if (j + 1 >= p.length()) {
+
+            //Case with "\": anything comes after "\", treat as a literal
+            if (p.charAt(j) == '\\') {
+
+                //Implement to ignore "\"
+                j++;
+
+                //Set a state with any character
+                setState(state, p.charAt(j), p.charAt(j + 1), p.charAt(j + 1));
+                j++;
+                result = state;
+                state++;
+                return result;
+            }
+
+            //Check if looking at literals
+            if (isVocab(p.charAt(j))) {
+
+                setState(state, p.charAt(j), p.charAt(j + 1), p.charAt(j + 1));
+
+                j++;
+                result = state;
+                state++;
+
+                return result;
+
+            } else {
+
+                //Check if it is an expression
+                if (character[j] == '(') {
+                    j++;
+                    //result=expression();
+                    if (character[j] == ')') {
+                        j++;
+                    } else {
+                        System.out.println("Must have a ')' in the end");
+                    }
+                } else {
+                    System.out.println("not a factor");
+                }
+
+            }
+        } else {
+            //Final state to end
+            setState(state, p.charAt(j), -1, -1);
+        }
+        return state;//No factor so return start state
+    }
+
 
 //T -> F or F* or F+T
 public int term(){
 
     //First execution term will take will be factor, if not F? false or exception etc
     int t1= factor();
-    int result= factor();
+    int result=t1;
     int f1= state-1;//last one just built from factor()
 
-        if(character[j]=='*'){
+       /* if(character[j]=='*'){
             setState(state,'`',t1,state+1);//branching that 0 or more of t1
             j++;
             result= state;//return this state
@@ -98,62 +134,32 @@ public int term(){
             }
 
             return result;
-        }
+        }*/
         //Factor itself
         return result;
-
 }
 
 
-//F -> literal or expression
-    private int factor() {
+    //find an expression (term, E)
+/*    public int expression(){
 
-        int result;
-    //Check if looking at literals
-    if (isVocab(character[j])){
-        setState(state,character[j],n1[j],n2[j]);
-        j++;
-        result=state;
-        state++;
-        return result;
-    }else {
+    int result =term();//find the term first
 
-        //Check if it is an expression
-        if(character[j]=='('){
-            j++;
-            //result=expression();
-            if (character[j]==')'){
-                j++;
-            }else {
-                System.err.println("Must have a ')' in the end");
-            }
+    //check if this is an end of string, null byte
+    if(character[j]==0){
+        //Only term in the expression
+        return
+
+    }else{
+        //Look ahead to see if there are more terms which starting with ( or literal
+        if(character[j]!='('||isVocab(character[j])){
+            return
         }else {
-            System.err.println("not a factor");
+            expression();
         }
-
-    }return state;//No factor so return start state
     }
-
-
-    //Check the character is allowed symbol
-    public boolean isVocab(char ch){
-    if( ch == '+' || ch == '*' ||ch=='?'||ch=='|' )return false;
-    return true;
-
-}
-
-
-
-
-//    public static void main(String[] args) {
-//
-//
-//        String st = "ab*a+cd";
-//        String [] p=new String[9];
-//        for (int i=0; i < p.length; i++)
-//
-//            System.out.println("Char " + i + " is " + st.charAt(i));
-//    }
+    return
+}*/
 
 
 }
