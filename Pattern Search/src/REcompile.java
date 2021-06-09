@@ -7,8 +7,10 @@ public class REcompile {
     // the symbol to be matched or branch-state indicator (or other type of indicator if you find an alternative useful),
     // and two numbers indicating the two possible next states.
 
+    String p = "a*bB*"; //globally accessible variable
     //String p = "ab*a+cd"; //globally accessible variable
-    String p = "aabbaab"; //globally accessible variable
+
+    //String p = "aabbaab"; //globally accessible variable
     //String p = "\\aabb"; //globally accessible variable
 
     //Global state variable, for setting up a new state
@@ -17,11 +19,13 @@ public class REcompile {
     String closure="()";
     String concatenation = "*";
 
+
+    int lengthOfString = p.length();
     //Character array
-    char [] character = new char[p.length()];
+    char [] character = new char[lengthOfString];
     //next state arrays
-    int [] n1 = new int[p.length()];
-    int [] n2 = new int [p.length()];
+    int [] n1 = new int[lengthOfString];
+    int [] n2 = new int [lengthOfString];
 
     //Increment counter for regexp FSM
     int j =0;
@@ -50,55 +54,68 @@ public class REcompile {
         int result;
 
         //Set a state only if we have a space in the array
-        if (j + 1 < p.length()) {
+        if (j < lengthOfString-1) {
 
             //Case with "\": anything comes after "\", treat as a literal
             if (p.charAt(j) == '\\') {
 
-                //Implement to ignore "\"
-                j++;
+                //Set a state with any character after "\"
+                setState(state, p.charAt(j+1), state + 2, state + 2);
+                //@Testing
+                System.out.println("Current state with '\\': "+state+", ch= "+ character[state]+ ", n1: "+n1[state]+", n2: "+n2[state]);
+                //Increment since a state has been created
+                j+=2; result = state; state++;
 
-                //Set a state with any character
-                setState(state, p.charAt(j), p.charAt(j + 1), p.charAt(j + 1));
-                j++;
-                result = state;
-                state++;
                 return result;
             }
 
-            //Check if looking at literals
+            //Check if looking at a literal
             if (isVocab(p.charAt(j))) {
 
-                setState(state, p.charAt(j), p.charAt(j + 1), p.charAt(j + 1));
 
-                j++;
-                result = state;
-                state++;
-
+                setState(state, p.charAt(j), state+1, state+1);
+                //@Testing
+                System.out.println("Current state adding normal literal: "+state+", ch= "+ character[state]+ ", n1: "+n1[state]+", n2: "+n2[state]);
+                //Increment since a state has been created
+                j++; result = state; state++;
                 return result;
 
-            } else {
+            } /*else {
 
                 //Check if it is an expression
-                if (character[j] == '(') {
+                if (p.charAt(j) == '(') {
                     j++;
+
+                    //@@NEED MODIFICATION
                     //result=expression();
-                    if (character[j] == ')') {
+
+                    if (p.charAt(j) == ')') {
                         j++;
                     } else {
                         System.out.println("Must have a ')' in the end");
                     }
+
                 } else {
                     System.out.println("not a factor");
                 }
+            }*/
 
-            }
-        } else {
+        } else if (j==lengthOfString-1) {
             //Final state to end
             setState(state, p.charAt(j), -1, -1);
+            //@Testing
+            System.out.println("Current state: "+state+", ch= "+ character[state]+ ", n1: "+n1[state]+", n2: "+n2[state]);
+            result=state;
+            return result;
+
+        }else {
+            return state;
         }
-        return state;//No factor so return start state
+            return state;//No factor so return start state
+
     }
+
+
 
 
 //T -> F or F* or F+T
@@ -108,14 +125,17 @@ public int term(){
     int t1= factor();
     int result=t1;
     int f1= state-1;//last one just built from factor()
+        if(p.charAt(j)=='*'){
 
-       /* if(character[j]=='*'){
-            setState(state,'`',t1,state+1);//branching that 0 or more of t1
-            j++;
-            result= state;//return this state
-            state++;//increment for the next state
+            setState(state,'`',state-1,state+1);//branching that 0 or more of t1
+            System.out.println("Current state with closure symbol: "+state+", ch= "+ character[state]+ ", n1: "+n1[state]+", n2: "+n2[state]);
+
+            j++; result= state; state++;//increment for the next state
+            return result;
 
         }
+
+        /*
         if(character[j]=='+'){
             int t2=term();
             setState(state,'`',t1,t2);
@@ -136,7 +156,9 @@ public int term(){
             return result;
         }*/
         //Factor itself
-        return result;
+
+
+    return result;
 }
 
 
