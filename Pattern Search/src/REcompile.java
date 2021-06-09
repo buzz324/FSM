@@ -9,7 +9,7 @@ public class REcompile {
 
     //String p = "ab*a+cd"; //globally accessible variable
     String p = "aabbaab"; //globally accessible variable
-    //String p = "\\a"; //globally accessible variable
+    //String p = "\\aabb"; //globally accessible variable
 
     //Global state variable, for setting up a new state
     int state= 0;
@@ -50,7 +50,7 @@ public class REcompile {
         int result;
 
         //Set a state only if we have a space in the array
-        if (j + 1 >= p.length()) {
+        if (j + 1 < p.length()) {
 
             //Case with "\": anything comes after "\", treat as a literal
             if (p.charAt(j) == '\\') {
