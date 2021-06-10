@@ -1,18 +1,16 @@
 // Example input: aabbaab
 // Start off with a dummy 'start state' which can be connected once we are sure of all the alternations etc...
 // We need to have: 
-// - A list of current possible states we can be in (curr)
+// - The current state that we're in (curr)
 // - A list of possible next states (next)
+// - A 'mark' which indicates where we started
+// - A 'pointer' which indicates where we are at the moment.
 
 // Sequence of operations: 
-// Put the dummy start state (0) in curr
-// We're not actually 'in' a branching state, it just tells us there are two possible current states we can be in.
-// So pop off 0 from curr and pop in 1
-// Now that we're on 1, check if we're looking at an A
-// Since we are, then pass onto state 4. Put state 4 into next. 
-// 
+// Put the start state onto the current state. 
+// Put the possible next states of start into next state array.
+// If it's a branching state, just copy the next states into the current states
+// Check and match with all of the current states.
+// If it matches, get the matching state's next states, 
 
-// Enter the branching start state
 // 
-// Pop off all options and check if they match
-
