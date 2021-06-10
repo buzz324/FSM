@@ -7,14 +7,15 @@ public class REcompile {
     // the symbol to be matched or branch-state indicator (or other type of indicator if you find an alternative useful),
     // and two numbers indicating the two possible next states.
 
-    String p = "a*bB*"; //globally accessible variable
+    //String p = "a*bB*"; //globally accessible variable
     //String p = "ab*a+cd"; //globally accessible variable
 
-    //String p = "aabbaab"; //globally accessible variable
+    String p = "ab"; //globally accessible variable
     //String p = "\\aabb"; //globally accessible variable
 
     //Global state variable, for setting up a new state
     int state= 0;
+    int finalState;
     String alternation="+";
     String closure="()";
     String concatenation = "*";
@@ -22,10 +23,10 @@ public class REcompile {
 
     int lengthOfString = p.length();
     //Character array
-    char [] character = new char[lengthOfString];
+    char [] character = new char[lengthOfString+2];
     //next state arrays
-    int [] n1 = new int[lengthOfString];
-    int [] n2 = new int [lengthOfString];
+    int [] n1 = new int[lengthOfString+2];
+    int [] n2 = new int [lengthOfString+2];
 
     //Increment counter for regexp FSM
     int j =0;
@@ -53,8 +54,20 @@ public class REcompile {
 
         int result;
 
+        //set
+        if(state==0){
+            setState(state,'`',1,1);
+
+            //@Testing
+            System.out.println("Start state: "+state+", ch= "+ character[state]+ ", n1: "+n1[state]+", n2: "+n2[state]);
+
+            result=state; state++;
+            return result;
+
+        }
+
         //Set a state only if we have a space in the array
-        if (j < lengthOfString-1) {
+        if (j < character.length+1) {
 
             //Case with "\": anything comes after "\", treat as a literal
             if (p.charAt(j) == '\\') {
@@ -69,8 +82,9 @@ public class REcompile {
                 return result;
             }
 
-            //Check if looking at a literal
+            //Check if looking at a literal (concatenation)
             if (isVocab(p.charAt(j))) {
+
 
 
                 setState(state, p.charAt(j), state+1, state+1);
@@ -78,6 +92,18 @@ public class REcompile {
                 System.out.println("Current state adding normal literal: "+state+", ch= "+ character[state]+ ", n1: "+n1[state]+", n2: "+n2[state]);
                 //Increment since a state has been created
                 j++; result = state; state++;
+
+
+                //End of array
+                if (state==stringLength()+1) {
+                    //Final state to end
+                    setState(state, 'F', -1, -1);
+                    //@Testing
+                    System.out.println("End state: "+state+", ch= "+ character[state]+ ", n1: "+n1[state]+", n2: "+n2[state]);
+                    result=state;
+                    return result;
+
+                }
                 return result;
 
             } /*else {
@@ -100,16 +126,6 @@ public class REcompile {
                 }
             }*/
 
-        } else if (j==lengthOfString-1) {
-            //Final state to end
-            setState(state, p.charAt(j), -1, -1);
-            //@Testing
-            System.out.println("Current state: "+state+", ch= "+ character[state]+ ", n1: "+n1[state]+", n2: "+n2[state]);
-            result=state;
-            return result;
-
-        }else {
-            return state;
         }
             return state;//No factor so return start state
 
@@ -125,7 +141,8 @@ public int term(){
     int t1= factor();
     int result=t1;
     int f1= state-1;//last one just built from factor()
-        if(p.charAt(j)=='*'){
+
+  /*  if(p.charAt(j)=='*'){
 
             setState(state,'`',state-1,state+1);//branching that 0 or more of t1
             System.out.println("Current state with closure symbol: "+state+", ch= "+ character[state]+ ", n1: "+n1[state]+", n2: "+n2[state]);
@@ -133,7 +150,7 @@ public int term(){
             j++; result= state; state++;//increment for the next state
             return result;
 
-        }
+        }*/
 
         /*
         if(character[j]=='+'){
@@ -156,7 +173,6 @@ public int term(){
             return result;
         }*/
         //Factor itself
-
 
     return result;
 }
