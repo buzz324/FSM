@@ -13,4 +13,16 @@
 // Check and match with all of the current states.
 // If it matches, get the matching state's next states, 
 
-// 
+// Loop continues until:
+// End of input is reached (FAIL)
+// No more possible current states (FAIL)
+// Final state reached (PASS)
+
+// #1-write a simple FSM, representing "abcde"
+// #2-Figure out how to implement a deque
+// #3-Implement the actual searching functionality
+
+
+abcde
+abcg
+
