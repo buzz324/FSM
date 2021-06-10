@@ -20,7 +20,7 @@ public class REsearch {
 
         REsearch search = new REsearch();
 
-       /* try {
+        try {
             if (args[0] != null && args[0] != "") {
                 search.read(args[0]); // Pass our filename argument
             } else {
@@ -28,7 +28,7 @@ public class REsearch {
             }
         } catch (Exception ex) {
             System.err.println("Usage: REsearch <text filename> \n The file must be within the same directory as this class!");
-        } */
+        } 
 
         search.getAllFsms();
 
