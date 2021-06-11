@@ -12,7 +12,7 @@ public class REcompile {
 
     //String p = "a*b*"; //globally accessible variable
     //String p = "ab*a+cd"; //globally accessible variable
-    String p = "a+c+d"; //globally accessible variable
+    String p = "a+c"; //globally accessible variable
 
     //String p = "absd"; //globally accessible variable
     //String p = "\\3aa"; //globally accessible variable
@@ -141,6 +141,9 @@ public class REcompile {
 
         }
 
+        //nothing matches so increment(for "+", operator)
+        // j++;
+
         return state-1;//No factor so return start state
 
     }
@@ -177,15 +180,18 @@ public int term(){
             j++;//move onto next symbol after the "+"
 
             //if there is no next character after "+"
-            if(!isVocab(p.charAt(j))){
+        /*    if(!isVocab(p.charAt(j))){
                 //one or more time of previous symbols ex:a**
                 //NEED CODES
-            }
+            }*/
 
-            int t2=term(); //Remember the previous state to join
+
+            int t2=term(); //Remember the n2 of branch state
+            System.out.println("t1 "+t1+" t2 "+t2);
 
             //Set the disjunction branch
             setState(state,'`',t1,t2);
+
             System.out.println("Current state with disjunction symbol: " + state + ", ch= " + character[state] + ", n1: " + n1[state] + ", n2: " + n2[state]);
 
             //set the previous state from disjunction regex to disjunction branch
@@ -196,15 +202,16 @@ public int term(){
 
             //Check if preceding term is non-branching state by comparing two next states
             if(n1[f1]==n2[f1]){
-                //Updating the preceding term's states
-                setState(f1,character[f1],state,state);
 
+                //Updating the preceding term's states
+                setState(f1,character[f1],state+1,state+1);
 
             }else {
                 //Branching so only one state to merge
-                setState(f1,character[f1+1],n1[f1],state);
+                setState(f1,character[f1+1],n1[f1],state+1);
 
             }
+
             state++;
 
             return result;
@@ -216,25 +223,25 @@ public int term(){
 
 
     //find an expression (term, E)
-/*    public int expression(){
+    public int expression(){
 
     int result =term();//find the term first
 
     //check if this is an end of string, null byte
-    if(character[j]==0){
+    if(p.charAt(j)==0){
         //Only term in the expression
-        return
+        return result;
 
     }else{
         //Look ahead to see if there are more terms which starting with ( or literal
-        if(character[j]!='('||isVocab(character[j])){
-            return
+        if(p.charAt(j)!='('||isVocab(p.charAt(j))){
+            return result;
         }else {
             expression();
         }
     }
-    return
-}*/
+    return result;
+}
 
 
     public void dump(){
