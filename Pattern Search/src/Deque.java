@@ -4,7 +4,7 @@ public class Deque {
     SMnode last; // Creates a reference to our last 'client' in the queue
     int count = 0; // Creating a global int variable to store length of our queue
 
-    public void push(SM nodeIn) {
+    public void put(int nodeIn) { // PUT is going in the BACK of the QUEUE
 
         SMnode temp = new SMnode(nodeIn);
 
@@ -20,23 +20,24 @@ public class Deque {
         return;
     }
 
-    public SM get() {
-        if (head == null) {
-            return null; // Return as there is nothing in the queue to get.
-        } else {
-            SMnode temp = head; // Make a temp reference to head
-            head = temp.next; // Make our head point to the next item in queue 
-            temp.next = null; // And set our temp's .next to null to safely disconnect.
-    
-            if (head == null) { // If we happened to delete the only item in our queue
-                last = null; // Then set last to null too.
-            }
-            count--;
-            return temp.node;
+    public int get() {
+        SMnode temp = head; // Make a temp reference to head
+        head = temp.next; // Make our head point to the next item in queue 
+        temp.next = null; // And set our temp's .next to null to safely disconnect.
+
+        if (head == null) { // If we happened to delete the only item in our queue
+            last = null; // Then set last to null too.
         }
+        count--;
+        return temp.node;
     }
 
-    public void put (SM nodeIn) {
+    public Boolean peek() {
+        // Returns whether or not there's a value left
+        return head != null;
+    }
+
+    public void push (int nodeIn) { // PUSH is going in the FRONT of the QUEUE
 
         SMnode temp = new SMnode(nodeIn);
 
@@ -58,16 +59,16 @@ public class Deque {
 
         SMnode temp = head;
         while(temp != null) {
-            System.out.println(temp.node.n1);
+            System.out.println(temp.node);
             temp = temp.next; 
         }
     }
 
     public class SMnode {
-        public SM node; 
+        public int node; 
         public SMnode next;
 
-        public SMnode(SM nodeIn) {
+        public SMnode(int nodeIn) {
             node = nodeIn;
         }
 

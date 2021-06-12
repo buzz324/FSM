@@ -5,7 +5,7 @@ public class DequeTest {
      // DequeTest entry point
      public static void main(String[] args) {
         // usage instructions
-        String usage = new String("please enter: `push|put <int value>`, `get`, `print`");
+        String usage = new String("please enter: `push|put <int value>`, `get`, `print`, `peek`");
         System.out.println(usage);
 
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
@@ -29,22 +29,20 @@ public class DequeTest {
                                 System.err.println(usage);
                                 break;
                             }
-                            int val = Integer.parseInt(cmd[1]);
-                            SM test = new SM('a', Integer.parseInt(cmd[1]), 0);
-                            deque.push(test);
+                            deque.push(Integer.parseInt(cmd[1]));
                             break;
                         case "put":
                             if (cmd.length < 2) { // Check input
                                 System.err.println(usage);
                                 break;
                             }
-                            val = Integer.parseInt(cmd[1]);
-                            test = new SM('a', Integer.parseInt(cmd[1]), 0);
-                            deque.put(test);
+                            deque.put(Integer.parseInt(cmd[1]));
                             break;
                         case "get":
-                            int v = deque.get().n1;
+                            int v = deque.get();
                             System.out.println("Got value: " + v);
+                        case "peek":
+                        System.out.println("peek value: " + deque.peek());
                         case "print":
                             break;
                         default:
