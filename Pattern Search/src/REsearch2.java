@@ -140,12 +140,6 @@ public class REsearch2 {
             }
             inputReader.close();
 
-            // For testing purposes (Print out all the SM's in our arrayList)
-            for (int i = 0; i < states.size(); i++) {
-                SM ithSM = states.get(i);
-                System.out.println(ithSM.character + Integer.toString(ithSM.n1) + Integer.toString(ithSM.n2));
-            } 
-
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("Error occured in importFsms method.");
