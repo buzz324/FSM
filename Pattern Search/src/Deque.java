@@ -4,6 +4,8 @@ public class Deque {
     SMnode last; // Creates a reference to our last 'client' in the queue
     int count = 0; // Creating a global int variable to store length of our queue
 
+    static final int SCAN = -1;
+
     public void put(int nodeIn) { // PUT is going in the BACK of the QUEUE
 
         SMnode temp = new SMnode(nodeIn);
@@ -62,6 +64,13 @@ public class Deque {
             System.out.println(temp.node);
             temp = temp.next; 
         }
+    }
+
+    public void initialise() {
+        head = null;
+        last = null;
+        count = 0;
+        push(SCAN);
     }
 
     public class SMnode {

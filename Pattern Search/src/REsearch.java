@@ -143,7 +143,6 @@ public class REsearch {
                         }
                         pointer++; // moves to next character IF we've got any more to go
                         // Is our line finished? Aka we're on the last char on the array
-
                     }
                 }
 
@@ -151,10 +150,6 @@ public class REsearch {
             }
 
         }
-
-
-
-
     }
 
     private void getAllFsms() {
